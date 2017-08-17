@@ -1,18 +1,17 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using Jerry;
+using UnityEngine;
 
 public class JerryCoroutineTest : MonoBehaviour
 {
-    private CoroutineTask task1;
+    private JerryCoroutine.CorTask task1;
 
     void Start()
     {
-        task1 = new CoroutineTask(IE_Test1(), true);
-        task1.Finished += (manual) =>
+        task1 = new JerryCoroutine.CorTask(IE_Test1(), true, (manual) =>
         {
             Debug.LogWarning("IE_Test1 Finished " + manual);
-        };
+        });
     }
 
     void OnDestroy()
