@@ -43,6 +43,9 @@ namespace Jerry
             return wfs;
         }
 
+        /// <summary>
+        /// 切场景的时候可以清理一次
+        /// </summary>
         public static void ClearWaitForSeconds()
         {
             _waitForSecondsYielders.Clear();
