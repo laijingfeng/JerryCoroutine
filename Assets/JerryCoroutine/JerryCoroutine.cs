@@ -16,6 +16,9 @@ namespace Jerry
 
         public class CorTask
         {
+            /// <summary>
+            /// 是否已经开始并且没有结束
+            /// </summary>
             public bool Running
             {
                 get
@@ -24,6 +27,9 @@ namespace Jerry
                 }
             }
 
+            /// <summary>
+            /// 是否暂停中
+            /// </summary>
             public bool Paused
             {
                 get
