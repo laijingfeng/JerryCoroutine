@@ -5,6 +5,12 @@ namespace Jerry
 {
     public class JerryCoroutine : SingletonMono<JerryCoroutine>
     {
+        protected override void Awake()
+        {
+            base.Awake();
+            DontDestroyOnLoad(this.gameObject);
+        }
+
         public static void StopTask(CorTask task)
         {
             if (task != null)
