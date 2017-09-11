@@ -5,6 +5,15 @@ namespace Jerry
 {
     public class JerryCoroutine : SingletonMono<JerryCoroutine>
     {
+        public static void StopTask(CorTask task)
+        {
+            if (task != null)
+            {
+                task.Stop();
+                task = null;
+            }
+        }
+
         public class CorTask
         {
             public bool Running
@@ -46,8 +55,10 @@ namespace Jerry
             /// </summary>
             private bool used = false;
 
-            public CorTask(IEnumerator c, bool autoStart = true, Action<bool> finishCallback = null)
+            public CorTask(IEnumerator c, bool autoStart = true, Action<bool> finishCallback = null, CorTask task = null)
             {
+                JerryCoroutine.StopTask(task);
+
                 endCallback = finishCallback;
                 coroutine = c;
                 if (autoStart)
