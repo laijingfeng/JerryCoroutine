@@ -3,6 +3,14 @@ using System.Collections;
 
 namespace Jerry
 {
+    /// <summary>
+    /// <para>协程管理</para>
+    /// <para>非Mono可以运行协程</para>
+    /// <para>可以不用字符串启动停止</para>
+    /// <para>注意：调起的协程不是在脚本内部执行，隐藏脚本或者删除脚本，正在运行的协程是不会停止的，需要主动去停止</para>
+    /// <para>接口1：创建CoroutineManager.CorTask</para>
+    /// <para>接口2：停止CoroutineManager.StopTask(task)</para>
+    /// </summary>
     public class JerryCoroutine : SingletonMono<JerryCoroutine>
     {
         protected override void Awake()
@@ -17,6 +25,59 @@ namespace Jerry
             {
                 task.Stop();
                 task = null;
+            }
+        }
+        
+        /// <summary>
+        /// 执行多个协程
+        /// </summary>
+        /// <param name="tasks">协程任务</param>
+        /// <param name="parallel">是否并行</param>
+        /// <param name="finish">完成回调</param>
+        /// <returns></returns>
+        public IEnumerator DoIEnumerators(List<IEnumerator> tasks, bool parallel = true, Action finish = null, Action<float> pro = null)
+        {
+            if (parallel)
+            {
+                List<Coroutine> tasks2 = new List<Coroutine>();
+
+                for (int i = 0, imax = tasks.Count; i < imax; i++)
+                {
+                    if (tasks[i] != null)
+                    {
+                        tasks2.Add(CoroutineManager.Instance.StartCoroutine(tasks[i]));
+                    }
+                }
+
+                for (int i = 0, imax = tasks2.Count; i < imax; i++)
+                {
+                    yield return tasks2[i];
+                    if (pro != null)
+                    {
+                        pro((i + 1) * 1.0f / imax);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0, imax = tasks.Count; i < imax; i++)
+                {
+                    yield return tasks[i];
+                    if (pro != null)
+                    {
+                        pro((i + 1) * 1.0f / imax);
+                    }
+                }
+            }
+
+            if (pro != null)
+            {
+                pro(1.0f);
+            }
+
+            if (finish != null)
+            {
+                finish();
             }
         }
 
