@@ -34,8 +34,20 @@ namespace Jerry
         /// <param name="tasks">协程任务</param>
         /// <param name="parallel">是否并行</param>
         /// <param name="finish">完成回调</param>
+        /// <param name="pro">进度</param>
+        public void DoIEnumerators(List<IEnumerator> tasks, bool parallel = true, Action finish = null, Action<float> pro = null)
+        {
+            CoroutineManager.Instance.StartCoroutine(DoIEnumerators_IE(tasks, parallel, finish, pro));
+        }
+        
+        /// <summary>
+        /// 执行多个协程
+        /// </summary>
+        /// <param name="tasks">协程任务</param>
+        /// <param name="parallel">是否并行</param>
+        /// <param name="finish">完成回调</param>
         /// <returns></returns>
-        public IEnumerator DoIEnumerators(List<IEnumerator> tasks, bool parallel = true, Action finish = null, Action<float> pro = null)
+        public IEnumerator DoIEnumerators_IE(List<IEnumerator> tasks, bool parallel = true, Action finish = null, Action<float> pro = null)
         {
             if (tasks != null && tasks.Count > 0)
             {
