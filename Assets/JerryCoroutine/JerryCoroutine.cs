@@ -37,47 +37,50 @@ namespace Jerry
         /// <returns></returns>
         public IEnumerator DoIEnumerators(List<IEnumerator> tasks, bool parallel = true, Action finish = null, Action<float> pro = null)
         {
-            if (parallel)
+            if (tasks != null && tasks.Count > 0)
             {
-                List<Coroutine> tasks2 = new List<Coroutine>();
-
-                for (int i = 0, imax = tasks.Count; i < imax; i++)
+                if (parallel)
                 {
-                    if (tasks[i] != null)
+                    List<Coroutine> tasks2 = new List<Coroutine>();
+
+                    for (int i = 0, imax = tasks.Count; i < imax; i++)
                     {
-                        tasks2.Add(CoroutineManager.Instance.StartCoroutine(tasks[i]));
+                        if (tasks[i] != null)
+                        {
+                            tasks2.Add(CoroutineManager.Instance.StartCoroutine(tasks[i]));
+                        }
+                    }
+
+                    for (int i = 0, imax = tasks2.Count; i < imax; i++)
+                    {
+                        yield return tasks2[i];
+                        if (pro != null)
+                        {
+                            pro((i + 1) * 1.0f / imax);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0, imax = tasks.Count; i < imax; i++)
+                    {
+                        yield return tasks[i];
+                        if (pro != null)
+                        {
+                            pro((i + 1) * 1.0f / imax);
+                        }
                     }
                 }
 
-                for (int i = 0, imax = tasks2.Count; i < imax; i++)
+                if (pro != null)
                 {
-                    yield return tasks2[i];
-                    if (pro != null)
-                    {
-                        pro((i + 1) * 1.0f / imax);
-                    }
+                    pro(1.0f);
                 }
-            }
-            else
-            {
-                for (int i = 0, imax = tasks.Count; i < imax; i++)
+
+                if (finish != null)
                 {
-                    yield return tasks[i];
-                    if (pro != null)
-                    {
-                        pro((i + 1) * 1.0f / imax);
-                    }
+                    finish();
                 }
-            }
-
-            if (pro != null)
-            {
-                pro(1.0f);
-            }
-
-            if (finish != null)
-            {
-                finish();
             }
         }
 
