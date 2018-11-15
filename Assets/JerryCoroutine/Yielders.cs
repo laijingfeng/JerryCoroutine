@@ -1,4 +1,6 @@
-﻿﻿using System.Collections.Generic;
+﻿//Version: 2018-11-15-00
+﻿
+using System.Collections.Generic;
 using UnityEngine;
 
 // Usage:
@@ -11,6 +13,9 @@ using UnityEngine;
 
 namespace Jerry
 {
+    /// <summary>
+    /// Yielders
+    /// </summary>
     public static class Yielders
     {
         // dictionary with a key of ValueType will box the value to perform comparison / hash code calculation while scanning the hashtable.
@@ -27,7 +32,13 @@ namespace Jerry
             }
         }
 
+        /// <summary>
+        /// 等价于：new WaitForEndOfFrame()
+        /// </summary>
         public static WaitForEndOfFrame EndOfFrame = new WaitForEndOfFrame();
+        /// <summary>
+        /// 等价于：new WaitForFixedUpdate()
+        /// </summary>
         public static WaitForFixedUpdate FixedUpdate = new WaitForFixedUpdate();
 
         public static WaitForSeconds GetWaitForSeconds(float seconds)

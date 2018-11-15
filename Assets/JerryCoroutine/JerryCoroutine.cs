@@ -1,5 +1,9 @@
-﻿using System;
+﻿//Version: 2018-11-15-00
+
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Jerry
 {
@@ -27,25 +31,26 @@ namespace Jerry
                 task = null;
             }
         }
-        
+
         /// <summary>
         /// 执行多个协程
         /// </summary>
         /// <param name="tasks">协程任务</param>
         /// <param name="parallel">是否并行</param>
         /// <param name="finish">完成回调</param>
-        /// <param name="pro">进度</param>
+        /// <param name="pro">进度(任务数量完成度)</param>
         public void DoIEnumerators(List<IEnumerator> tasks, bool parallel = true, Action finish = null, Action<float> pro = null)
         {
-            CoroutineManager.Instance.StartCoroutine(DoIEnumerators_IE(tasks, parallel, finish, pro));
+            JerryCoroutine.Instance.StartCoroutine(DoIEnumerators_IE(tasks, parallel, finish, pro));
         }
-        
+
         /// <summary>
         /// 执行多个协程
         /// </summary>
         /// <param name="tasks">协程任务</param>
         /// <param name="parallel">是否并行</param>
         /// <param name="finish">完成回调</param>
+        /// <param name="pro">进度(任务数量完成度)</param>
         /// <returns></returns>
         public IEnumerator DoIEnumerators_IE(List<IEnumerator> tasks, bool parallel = true, Action finish = null, Action<float> pro = null)
         {
@@ -59,7 +64,7 @@ namespace Jerry
                     {
                         if (tasks[i] != null)
                         {
-                            tasks2.Add(CoroutineManager.Instance.StartCoroutine(tasks[i]));
+                            tasks2.Add(JerryCoroutine.Instance.StartCoroutine(tasks[i]));
                         }
                     }
 
@@ -96,6 +101,9 @@ namespace Jerry
             }
         }
 
+        /// <summary>
+        /// 协程任务
+        /// </summary>
         public class CorTask
         {
             /// <summary>
@@ -143,6 +151,13 @@ namespace Jerry
             /// </summary>
             private bool used = false;
 
+            /// <summary>
+            /// 构造
+            /// </summary>
+            /// <param name="c"></param>
+            /// <param name="autoStart"></param>
+            /// <param name="finishCallback"></param>
+            /// <param name="task"></param>
             public CorTask(IEnumerator c, bool autoStart = true, Action<bool> finishCallback = null, CorTask task = null)
             {
                 JerryCoroutine.StopTask(task);
@@ -155,16 +170,25 @@ namespace Jerry
                 }
             }
 
+            /// <summary>
+            /// 暂停
+            /// </summary>
             public void Pause()
             {
                 paused = true;
             }
 
+            /// <summary>
+            /// 取消暂停
+            /// </summary>
             public void Unpause()
             {
                 paused = false;
             }
 
+            /// <summary>
+            /// 开始
+            /// </summary>
             public void Start()
             {
                 if (used)
@@ -175,9 +199,12 @@ namespace Jerry
 
                 used = true;
                 running = true;
-                JerryCoroutine.Inst.StartCoroutine(CallWrapper());
+                JerryCoroutine.Instance.StartCoroutine(CallWrapper());
             }
 
+            /// <summary>
+            /// 停止
+            /// </summary>
             public void Stop()
             {
                 stopped = true;
